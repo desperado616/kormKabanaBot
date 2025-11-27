@@ -27,6 +27,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
+            background: #0f3460; /* Запасной цвет фона */
         }
 
         body {
@@ -40,12 +41,20 @@
             min-height: 100dvh;
             color: white;
             overflow: hidden;
-            padding: 5px;
-            padding-top: calc(5px + var(--safe-area-inset-top));
-            padding-bottom: calc(5px + var(--safe-area-inset-bottom));
-            padding-left: calc(5px + var(--safe-area-inset-left));
-            padding-right: calc(5px + var(--safe-area-inset-right));
+            padding: 0;
             position: relative;
+        }
+
+        /* Фон, который гарантированно покрывает всю область */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            z-index: -2;
         }
 
         .background-effects {
@@ -74,7 +83,7 @@
             text-align: center;
             max-width: min(500px, 98vw);
             width: 100%;
-            padding: 8px;
+            padding: 15px;
             z-index: 1;
             display: flex;
             flex-direction: column;
@@ -84,21 +93,21 @@
         }
 
         .header {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             text-align: center;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(15px);
-            border-radius: 16px;
-            padding: 12px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            padding: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             width: 100%;
         }
 
         h1 {
-            font-size: clamp(22px, 6vw, 28px);
-            margin-bottom: 4px;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            font-size: clamp(24px, 7vw, 32px);
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
             background: linear-gradient(45deg, #ff9a00, #ff6a00, #ff3d00);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -115,8 +124,8 @@
         }
 
         .subtitle {
-            font-size: clamp(13px, 3.5vw, 15px);
-            opacity: 0.8;
+            font-size: clamp(14px, 4vw, 16px);
+            opacity: 0.9;
             margin-bottom: 5px;
             color: #e0e0e0;
             line-height: 1.3;
@@ -125,15 +134,15 @@
         .game-info {
             display: flex;
             justify-content: space-between;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(15px);
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin-bottom: 8px;
-            font-size: clamp(16px, 4vw, 18px);
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            font-size: clamp(18px, 5vw, 22px);
             font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             position: relative;
             overflow: hidden;
             width: 100%;
@@ -147,9 +156,9 @@
         }
 
         .info-label {
-            font-size: clamp(11px, 3vw, 13px);
-            opacity: 0.7;
-            margin-bottom: 3px;
+            font-size: clamp(12px, 3.5vw, 14px);
+            opacity: 0.8;
+            margin-bottom: 4px;
             color: #b0b0b0;
         }
 
@@ -157,7 +166,7 @@
             position: absolute;
             bottom: 0;
             left: 0;
-            height: 3px;
+            height: 4px;
             background: linear-gradient(90deg, #00ff00, #ffff00, #ff0000);
             transition: width 0.3s ease;
         }
@@ -171,8 +180,8 @@
 
         #gameCanvas {
             background: linear-gradient(to bottom, #1a1a2e, #16213e, #0f3460);
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
             display: block;
             margin: 0 auto;
             width: 100%;
@@ -185,37 +194,37 @@
         .power-up-indicators {
             display: flex;
             justify-content: center;
-            gap: 8px;
-            margin: 8px 0;
+            gap: 10px;
+            margin: 12px 0;
             flex-wrap: wrap;
             width: 100%;
         }
 
         .power-up-indicator {
-            width: clamp(26px, 7vw, 32px);
-            height: clamp(26px, 7vw, 32px);
+            width: clamp(30px, 8vw, 38px);
+            height: clamp(30px, 8vw, 38px);
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: clamp(14px, 3.5vw, 16px);
+            font-size: clamp(15px, 4vw, 18px);
             opacity: 0.5;
             transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.25);
         }
 
         .power-up-indicator.active {
             opacity: 1;
             transform: scale(1.2);
-            box-shadow: 0 0 10px currentColor;
+            box-shadow: 0 0 12px currentColor;
         }
 
         .controls {
             display: flex;
             justify-content: space-between;
-            gap: 10px;
-            margin-top: 12px;
+            gap: 12px;
+            margin-top: 15px;
             width: 100%;
             flex-shrink: 0;
         }
@@ -223,20 +232,20 @@
         .control-btn {
             background: linear-gradient(145deg, #ff6b00, #ff3d00);
             border: none;
-            border-radius: 16px;
+            border-radius: 18px;
             color: white;
-            font-size: clamp(16px, 4.5vw, 20px);
+            font-size: clamp(18px, 5vw, 24px);
             font-weight: bold;
-            padding: clamp(12px, 3.5vw, 16px) clamp(12px, 3vw, 16px);
+            padding: clamp(14px, 4vw, 18px) clamp(14px, 3.5vw, 18px);
             cursor: pointer;
-            box-shadow: 0 6px 15px rgba(255, 107, 0, 0.4);
+            box-shadow: 0 6px 15px rgba(255, 107, 0, 0.5);
             transition: all 0.2s ease;
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            min-height: clamp(50px, 14vw, 60px);
+            gap: 8px;
+            min-height: clamp(55px, 16vw, 70px);
             position: relative;
             overflow: hidden;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
@@ -255,7 +264,7 @@
 
         .control-btn:active {
             transform: translateY(4px);
-            box-shadow: 0 3px 8px rgba(255, 107, 0, 0.4);
+            box-shadow: 0 3px 8px rgba(255, 107, 0, 0.5);
         }
 
         .control-btn:active::before {
@@ -289,29 +298,29 @@
         }
 
         .instructions {
-            background: rgba(255, 255, 255, 0.08);
-            padding: 20px;
-            border-radius: 16px;
-            margin: 15px 0;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 20px;
+            margin: 20px 0;
             text-align: left;
-            max-width: min(400px, 90vw);
+            max-width: min(450px, 90vw);
             width: 100%;
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
         }
 
         .instructions ul {
             padding-left: 20px;
-            margin-top: 12px;
+            margin-top: 15px;
         }
 
         .instructions li {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             line-height: 1.4;
             display: flex;
             align-items: flex-start;
-            font-size: clamp(14px, 3.5vw, 16px);
+            font-size: clamp(15px, 4vw, 17px);
             color: #e0e0e0;
         }
 
@@ -319,17 +328,17 @@
             content: '•';
             color: #ff6b00;
             font-weight: bold;
-            margin-right: 8px;
+            margin-right: 10px;
         }
 
         .screen h1 {
-            margin-bottom: 15px;
-            font-size: clamp(24px, 7vw, 32px);
+            margin-bottom: 20px;
+            font-size: clamp(26px, 8vw, 36px);
         }
 
         .screen p {
-            margin-bottom: 12px;
-            font-size: clamp(14px, 4vw, 16px);
+            margin-bottom: 15px;
+            font-size: clamp(15px, 4.5vw, 18px);
             color: #e0e0e0;
         }
 
@@ -338,13 +347,13 @@
             border: none;
             border-radius: 50px;
             color: white;
-            font-size: clamp(16px, 4.5vw, 20px);
+            font-size: clamp(18px, 5vw, 24px);
             font-weight: bold;
-            padding: clamp(14px, 4vw, 16px) clamp(30px, 8vw, 40px);
+            padding: clamp(15px, 4vw, 18px) clamp(35px, 9vw, 50px);
             cursor: pointer;
-            box-shadow: 0 8px 20px rgba(255, 107, 0, 0.4);
+            box-shadow: 0 8px 20px rgba(255, 107, 0, 0.5);
             transition: all 0.3s ease;
-            margin-top: 20px;
+            margin-top: 25px;
             position: relative;
             overflow: hidden;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
@@ -367,25 +376,25 @@
         }
 
         .stats {
-            font-size: clamp(16px, 4.5vw, 20px);
-            margin: 15px 0;
-            background: rgba(255, 255, 255, 0.08);
-            padding: 16px;
-            border-radius: 12px;
+            font-size: clamp(18px, 5vw, 24px);
+            margin: 20px 0;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
             width: 100%;
-            max-width: min(300px, 85vw);
+            max-width: min(350px, 85vw);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .combo-display {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 8px 12px;
-            border-radius: 16px;
-            font-size: clamp(13px, 3.5vw, 16px);
+            top: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 15px;
+            border-radius: 18px;
+            font-size: clamp(14px, 4vw, 18px);
             font-weight: bold;
             display: none;
             animation: pulse 0.5s infinite alternate;
@@ -399,20 +408,20 @@
 
         .level-indicator {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 6px 12px;
-            border-radius: 16px;
-            font-size: clamp(13px, 3.5vw, 15px);
+            top: 12px;
+            left: 12px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 8px 15px;
+            border-radius: 18px;
+            font-size: clamp(14px, 4vw, 16px);
             font-weight: bold;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .fps-counter {
             position: absolute;
-            bottom: 8px;
-            left: 10px;
+            bottom: 10px;
+            left: 12px;
             color: rgba(255, 255, 255, 0.4);
             font-size: 10px;
         }
@@ -433,17 +442,46 @@
         /* Адаптивность для очень маленьких экранов */
         @media (max-height: 700px) {
             .container {
-                padding: 5px;
+                padding: 10px;
             }
             
             .header {
-                margin-bottom: 8px;
+                margin-bottom: 12px;
+                padding: 12px;
+            }
+            
+            .game-info {
+                margin-bottom: 10px;
+                padding: 12px 16px;
+            }
+            
+            .controls {
+                margin-top: 12px;
+            }
+        }
+
+        @media (max-height: 600px) {
+            body {
+                justify-content: flex-start;
+                padding-top: 5px;
+            }
+            
+            .container {
+                padding: 8px;
+            }
+            
+            .header {
+                margin-bottom: 10px;
                 padding: 10px;
             }
             
             .game-info {
-                margin-bottom: 6px;
+                margin-bottom: 8px;
                 padding: 10px 14px;
+            }
+            
+            .power-up-indicators {
+                margin: 8px 0;
             }
             
             .controls {
@@ -451,59 +489,31 @@
             }
         }
 
-        @media (max-height: 600px) {
-            body {
-                padding: 3px;
-            }
-            
-            .container {
-                padding: 3px;
-            }
-            
-            .header {
-                margin-bottom: 6px;
-                padding: 8px;
-            }
-            
-            .game-info {
-                margin-bottom: 5px;
-                padding: 8px 12px;
-            }
-            
-            .power-up-indicators {
-                margin: 6px 0;
-            }
-            
-            .controls {
-                margin-top: 8px;
-            }
-        }
-
         @media (max-width: 350px) {
             .controls {
-                gap: 6px;
+                gap: 8px;
             }
             
             .control-btn {
-                padding: 10px 8px;
-                font-size: 14px;
-                min-height: 45px;
+                padding: 12px 10px;
+                font-size: 16px;
+                min-height: 50px;
             }
             
             .game-info {
-                padding: 10px 12px;
+                padding: 12px 14px;
             }
             
             .container {
-                padding: 5px;
+                padding: 8px;
             }
         }
 
         /* Портретный и ландшафтный режимы */
         @media (orientation: landscape) and (max-height: 500px) {
             body {
-                padding: 5px;
                 justify-content: flex-start;
+                padding-top: 5px;
             }
             
             .container {
@@ -512,7 +522,7 @@
             }
             
             .header {
-                margin-bottom: 5px;
+                margin-bottom: 8px;
                 padding: 8px;
             }
             
@@ -525,27 +535,19 @@
             }
         }
 
-        /* Специальные стили для очень высоких экранов */
-        @media (min-height: 1000px) {
+        /* Улучшенная адаптация для телефонов */
+        @media (max-width: 480px) {
             .container {
-                transform: scale(1);
-            }
-        }
-        
-        /* Фикс для Telegram WebApp */
-        @media (max-height: 600px) and (max-width: 400px) {
-            .container {
-                transform: scale(1);
+                padding: 12px;
             }
             
-            .screen {
-                padding: 15px;
-                justify-content: flex-start;
+            .game-info {
+                font-size: clamp(16px, 4.5vw, 20px);
             }
             
-            .instructions {
-                margin: 10px 0;
-                padding: 15px;
+            .power-up-indicator {
+                width: clamp(28px, 7vw, 34px);
+                height: clamp(28px, 7vw, 34px);
             }
         }
     </style>
@@ -672,19 +674,19 @@
         const finalLevelElement = document.getElementById('finalLevel');
         const fpsCounter = document.getElementById('fpsCounter');
 
-        // Настройки игры - УВЕЛИЧЕННАЯ СКОРОСТЬ для более динамичного геймплея
+        // Настройки игры - оптимальная скорость
         const gameSettings = {
-            initialPlayerSpeed: 7, // Быстрее
-            initialItemSpeed: 3,   // Быстрее
-            maxItemSpeed: 7,       // Быстрее
-            speedIncreaseInterval: 10000, 
-            speedIncreaseAmount: 0.2,    
-            burgerSpawnChance: 0.045,     // Больше бургеров
-            bombSpawnChance: 0.022,       // Больше бомб
-            powerUpSpawnChance: 0.009,    // Больше бонусов
-            comboTimeWindow: 2000,        
-            maxComboMultiplier: 5,        
-            pointsPerLevel: 800           
+            initialPlayerSpeed: 7,
+            initialItemSpeed: 3,
+            maxItemSpeed: 7,
+            speedIncreaseInterval: 10000,
+            speedIncreaseAmount: 0.2,
+            burgerSpawnChance: 0.045,
+            bombSpawnChance: 0.022,
+            powerUpSpawnChance: 0.009,
+            comboTimeWindow: 2000,
+            maxComboMultiplier: 5,
+            pointsPerLevel: 800
         };
 
         // Игровые переменные
@@ -753,7 +755,7 @@
                     y: -itemSize,
                     width: itemSize,
                     height: itemSize,
-                    speed: currentItemSpeed + Math.random() * 0.7, // Больше вариативности
+                    speed: currentItemSpeed + Math.random() * 0.7,
                     type: burgerVariant
                 });
             } else if (type === 'bomb') {
@@ -771,7 +773,7 @@
                     y: -itemSize,
                     width: itemSize,
                     height: itemSize,
-                    speed: currentItemSpeed + Math.random() * 0.7, // Больше вариативности
+                    speed: currentItemSpeed + Math.random() * 0.7,
                     type: bombVariant,
                     blinkState: true,
                     blinkTimer: 0
@@ -785,7 +787,7 @@
                     y: -itemSize,
                     width: itemSize,
                     height: itemSize,
-                    speed: currentItemSpeed + Math.random() * 0.7, // Больше вариативности
+                    speed: currentItemSpeed + Math.random() * 0.7,
                     type: powerUpType
                 });
             }
@@ -799,7 +801,7 @@
                     y: y,
                     size: Math.random() * 8 + 2,
                     color: color,
-                    speedX: (Math.random() - 0.5) * 10, // Больше разлет
+                    speedX: (Math.random() - 0.5) * 10,
                     speedY: (Math.random() - 0.5) * 10,
                     life: 1
                 });
@@ -1085,7 +1087,7 @@
                 
                 particle.x += particle.speedX;
                 particle.y += particle.speedY;
-                particle.life -= 0.03; // Быстрее исчезают
+                particle.life -= 0.03;
                 
                 if (particle.life <= 0) {
                     particles.splice(index, 1);
@@ -1142,7 +1144,7 @@
                     if (powerUps.doublePoints.active) points *= 2;
                     
                     if (now - lastBurgerTime < gameSettings.comboTimeWindow) {
-                        comboMultiplier = Math.min(gameSettings.maxComboMultiplier, comboMultiplier + 0.3); // Быстрее растет комбо
+                        comboMultiplier = Math.min(gameSettings.maxComboMultiplier, comboMultiplier + 0.3);
                         comboDisplay.textContent = `COMBO x${comboMultiplier.toFixed(1)}!`;
                         comboDisplay.style.display = 'block';
                         
@@ -1176,7 +1178,7 @@
                         burger.x + burger.width/2, 
                         burger.y + burger.height/2, 
                         particleColor,
-                        18 // Больше частиц
+                        18
                     );
                     
                     burgers.splice(i, 1);
@@ -1213,7 +1215,7 @@
                             bomb.x + bomb.width/2, 
                             bomb.y + bomb.height/2, 
                             particleColor,
-                            22 // Больше частиц при взрыве
+                            22
                         );
                         
                         if (lives <= 0) {
@@ -1283,7 +1285,7 @@
                     const distance = Math.sqrt(dx*dx + dy*dy);
                     
                     if (distance < 150) {
-                        burger.x += dx * 0.08; // Сильнее притяжение
+                        burger.x += dx * 0.08;
                         burger.y += dy * 0.08;
                     }
                 });
@@ -1299,7 +1301,7 @@
                 
                 currentItemSpeed = Math.min(
                     gameSettings.maxItemSpeed, 
-                    gameSettings.initialItemSpeed + (level - 1) * 0.4 // Быстрее увеличивается сложность
+                    gameSettings.initialItemSpeed + (level - 1) * 0.4
                 );
                 
                 createParticles(
@@ -1567,40 +1569,41 @@
             startBtn.addEventListener('click', startGame);
             restartBtn.addEventListener('click', startGame);
             
-            // Адаптация для телефонов - принудительная настройка высоты
+            // Адаптация для телефонов - увеличиваем игру
             function adjustLayout() {
                 const container = document.querySelector('.container');
                 const screenHeight = window.innerHeight;
-                const containerHeight = container.scrollHeight;
+                const screenWidth = window.innerWidth;
                 
-                // Автоматическая подстройка под высоту экрана
-                if (screenHeight < 700) {
-                    const scale = Math.min(0.9, (screenHeight * 0.85) / containerHeight);
-                    container.style.transform = `scale(${scale})`;
-                } else {
-                    container.style.transform = 'scale(1)';
+                let scale = 1;
+                
+                // Увеличиваем масштаб для мобильных устройств
+                if (screenWidth <= 480) {
+                    if (screenHeight >= 800) {
+                        scale = 1.1; // Для высоких телефонов
+                    } else if (screenHeight >= 700) {
+                        scale = 1.05; // Для средних телефонов
+                    } else {
+                        scale = 1.0; // Для маленьких телефонов
+                    }
                 }
                 
-                // Для очень маленьких экранов делаем еще меньше
+                // Для очень маленьких экранов немного уменьшаем
                 if (screenHeight < 600) {
-                    container.style.transform = 'scale(0.85)';
-                }
-                if (screenHeight < 500) {
-                    container.style.transform = 'scale(0.75)';
+                    scale = 0.9;
                 }
                 
-                // Для высоких экранов увеличиваем
-                if (screenHeight > 1000) {
-                    container.style.transform = 'scale(1.1)';
-                }
+                container.style.transform = `scale(${scale})`;
             }
             
             window.addEventListener('resize', adjustLayout);
-            window.addEventListener('orientationchange', adjustLayout);
+            window.addEventListener('orientationchange', function() {
+                setTimeout(adjustLayout, 100);
+            });
             
             // Вызываем сразу после загрузки
             setTimeout(adjustLayout, 100);
-            setTimeout(adjustLayout, 500); // Двойной вызов для надежности
+            setTimeout(adjustLayout, 500);
         });
 
         // Оптимизация для мобильных устройств
