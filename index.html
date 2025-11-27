@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Мега Кабан - Бургер Битва</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-text-size-adjust: none;
+        }
+
+        :root {
+            --safe-area-inset-top: env(safe-area-inset-top);
+            --safe-area-inset-bottom: env(safe-area-inset-bottom);
+            --safe-area-inset-left: env(safe-area-inset-left);
+            --safe-area-inset-right: env(safe-area-inset-right);
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            min-height: 100dvh;
+            color: white;
+            overflow: hidden;
+            padding: 10px;
+            padding-top: calc(10px + var(--safe-area-inset-top));
+            padding-bottom: calc(10px + var(--safe-area-inset-bottom));
+            padding-left: calc(10px + var(--safe-area-inset-left));
+            padding-right: calc(10px + var(--safe-area-inset-right));
+            position: relative;
+        }
+
+        .background-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-1000px) rotate(360deg); }
+        }
+
+        .container {
+            text-align: center;
+            max-width: min(500px, 95vw);
+            width: 100%;
+            padding: 10px;
+            z-index: 1;
+        }
+
+        .header {
+            margin-bottom: 12px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: clamp(22px, 6vw, 28px);
+            margin-bottom: 4px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(45deg, #ff9a00, #ff6a00, #ff3d00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleGlow 2s infinite alternate;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        @keyframes titleGlow {
+            0% { filter: drop-shadow(0 0 5px rgba(255, 106, 0, 0.5)); }
+            100% { filter: drop-shadow(0 0 15px rgba(255, 106, 0, 0.8)); }
+        }
+
+        .subtitle {
+            font-size: clamp(12px, 3.5vw, 14px);
+            opacity: 0.8;
+            margin-bottom: 8px;
+            color: #e0e0e0;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            font-size: clamp(14px, 4vw, 16px);
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        .info-label {
+            font-size: clamp(10px, 3vw, 12px);
+            opacity: 0.7;
+            margin-bottom: 4px;
+            color: #b0b0b0;
+        }
+
+        .combo-meter {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00ff00, #ffff00, #ff0000);
+            transition: width 0.3s ease;
+        }
+
+        #gameCanvas {
+            background: linear-gradient(to bottom, #1a1a2e, #16213e, #0f3460);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            display: block;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 480px;
+            height: auto;
+            aspect-ratio: 4/5;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .control-btn {
+            background: linear-gradient(145deg, #ff6b00, #ff3d00);
+            border: none;
+            border-radius: 16px;
+            color: white;
+            font-size: clamp(16px, 4.5vw, 20px);
+            font-weight: bold;
+            padding: clamp(12px, 3.5vw, 18px) clamp(12px, 3vw, 16px);
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(255, 107, 0, 0.4);
+            transition: all 0.2s ease;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: clamp(50px, 14vw, 65px);
+            position: relative;
+            overflow: hidden;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .control-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .control-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 3px 8px rgba(255, 107, 0, 0.4);
+        }
+
+        .control-btn:active::before {
+            left: 100%;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(10, 10, 20, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            padding: 20px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        .screen.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            border-radius: 16px;
+            margin: 15px 0;
+            text-align: left;
+            max-width: min(400px, 90vw);
+            width: 100%;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+            margin-top: 12px;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.4;
+            display: flex;
+            align-items: flex-start;
+            font-size: clamp(13px, 3.5vw, 15px);
+            color: #e0e0e0;
+        }
+
+        .instructions li::before {
+            content: '•';
+            color: #ff6b00;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .screen h1 {
+            margin-bottom: 15px;
+            font-size: clamp(24px, 7vw, 32px);
+        }
+
+        .screen p {
+            margin-bottom: 12px;
+            font-size: clamp(14px, 4vw, 16px);
+            color: #e0e0e0;
+        }
+
+        .action-btn {
+            background: linear-gradient(145deg, #ff6b00, #ff3d00);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: clamp(16px, 4.5vw, 20px);
+            font-weight: bold;
+            padding: clamp(12px, 3.5vw, 16px) clamp(30px, 8vw, 40px);
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 107, 0, 0.4);
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .action-btn:hover::before {
+            left: 100%;
+        }
+
+        .stats {
+            font-size: clamp(16px, 4.5vw, 20px);
+            margin: 15px 0;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 16px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: min(300px, 85vw);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .power-up-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .power-up-indicator {
+            width: clamp(22px, 6vw, 26px);
+            height: clamp(22px, 6vw, 26px);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(12px, 3.5vw, 14px);
+            opacity: 0.5;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .power-up-indicator.active {
+            opacity: 1;
+            transform: scale(1.2);
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        .combo-display {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 12px;
+            border-radius: 16px;
+            font-size: clamp(12px, 3.5vw, 16px);
+            font-weight: bold;
+            display: none;
+            animation: pulse 0.5s infinite alternate;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
+        .level-indicator {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: clamp(12px, 3.5vw, 14px);
+            font-weight: bold;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .fps-counter {
+            position: absolute;
+            bottom: 6px;
+            left: 8px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 10px;
+        }
+
+        /* Анимации для частиц */
+        @keyframes explode {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: explode 0.6s ease-out forwards;
+        }
+
+        /* Адаптивность для очень маленьких экранов */
+        @media (max-height: 700px) {
+            .container {
+                transform: scale(0.9);
+                padding: 5px;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .container {
+                transform: scale(0.85);
+            }
+            
+            .controls {
+                margin-top: 15px;
+            }
+        }
+
+        @media (max-width: 350px) {
+            .controls {
+                gap: 5px;
+            }
+            
+            .control-btn {
+                padding: 10px 8px;
+                font-size: 14px;
+                min-height: 45px;
+            }
+            
+            .game-info {
+                padding: 10px 12px;
+            }
+            
+            .container {
+                padding: 5px;
+            }
+        }
+
+        /* Портретный и ландшафтный режимы */
+        @media (orientation: landscape) and (max-height: 500px) {
+            body {
+                padding: 5px;
+            }
+            
+            .container {
+                max-width: 100%;
+                transform: scale(0.7);
+            }
+            
+            .header {
+                margin-bottom: 8px;
+                padding: 8px;
+            }
+            
+            .controls {
+                margin-top: 12px;
+            }
+        }
+
+        /* Специальные стили для очень высоких экранов */
+        @media (min-height: 1000px) {
+            .container {
+                transform: scale(1.1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-effects" id="backgroundEffects"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>МЕГА КАБАН: БИТВА ЗА БУРГЕРЫ</h1>
+            <p class="subtitle">Лови бургеры, уворачивайся от бомб, собирай бонусы!</p>
+        </div>
+        <div class="game-info">
+            <div class="info-item">
+                <div class="info-label">ОЧКИ</div>
+                <div id="score">0</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">ЖИЗНИ</div>
+                <div id="lives">3</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">КОМБО</div>
+                <div id="combo">1x</div>
+            </div>
+            <div class="combo-meter" id="comboMeter"></div>
+        </div>
+        
+        <div class="power-up-indicators">
+            <div class="power-up-indicator" id="shieldIndicator" title="Щит">🛡️</div>
+            <div class="power-up-indicator" id="magnetIndicator" title="Магнит">🧲</div>
+            <div class="power-up-indicator" id="slowmoIndicator" title="Замедление">🐌</div>
+            <div class="power-up-indicator" id="doublePointsIndicator" title="Удвоение очков">✯✯</div>
+        </div>
+        
+        <div style="position: relative;">
+            <canvas id="gameCanvas" width="480" height="600"></canvas>
+            <div class="level-indicator">Уровень: <span id="level">1</span></div>
+            <div class="fps-counter" id="fpsCounter">FPS: 60</div>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn" id="leftBtn">← ВЛЕВО</button>
+            <button class="control-btn" id="rightBtn">ВПРАВО →</button>
+        </div>
+    </div>
+
+    <div id="startScreen" class="screen active">
+        <h1>МЕГА КАБАН: БИТВА ЗА БУРГЕРЫ</h1>
+        <div class="instructions">
+            <p>Помоги голодному кабану собрать как можно больше бургеров, уворачиваясь от бомб и собирая бонусы!</p>
+            <ul>
+                <li>Используйте кнопки ВЛЕВО и ВПРАВО для управления кабаном</li>
+                <li>Ловите падающие бургеры, чтобы получить очки</li>
+                <li>Избегайте бомб - они отнимают жизнь</li>
+                <li>Собирайте бонусы для особых способностей</li>
+                <li>Комбинируйте бургеры для увеличения множителя очков!</li>
+                <li>С каждым уровнем игра ускоряется</li>
+            </ul>
+        </div>
+        <button class="action-btn" id="startBtn">НАЧАТЬ ИГРУ</button>
+    </div>
+
+    <div id="gameOverScreen" class="screen">
+        <h1>ИГРА ОКОНЧЕНА!</h1>
+        <div class="stats">
+            <p>Ваш счет: <span id="finalScore">0</span></p>
+            <p>Максимальное комбо: <span id="maxCombo">0</span>x</p>
+            <p>Поймано бургеров: <span id="burgersCaught">0</span></p>
+            <p>Достигнут уровень: <span id="finalLevel">1</span></p>
+        </div>
+        <button class="action-btn" id="restartBtn">ИГРАТЬ СНОВА</button>
+    </div>
+
+    <div class="combo-display" id="comboDisplay">COMBO x1!</div>
+
+    <script>
+        // Инициализация Telegram Web App
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.expand();
+            tg.enableClosingConfirmation();
+        }
+
+        // Создаем плавающие элементы фона
+        function createBackgroundEffects() {
+            const container = document.getElementById('backgroundEffects');
+            for (let i = 0; i < 15; i++) {
+                const element = document.createElement('div');
+                element.className = 'floating-element';
+                element.style.width = `${Math.random() * 60 + 20}px`;
+                element.style.height = element.style.width;
+                element.style.left = `${Math.random() * 100}%`;
+                element.style.top = `${Math.random() * 100 + 100}%`;
+                element.style.animationDuration = `${Math.random() * 20 + 15}s`;
+                element.style.animationDelay = `${Math.random() * 5}s`;
+                element.style.background = `rgba(255, 255, 255, ${Math.random() * 0.05})`;
+                container.appendChild(element);
+            }
+        }
+
+        // Получаем элементы DOM
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const livesElement = document.getElementById('lives');
+        const comboElement = document.getElementById('combo');
+        const comboMeter = document.getElementById('comboMeter');
+        const comboDisplay = document.getElementById('comboDisplay');
+        const startScreen = document.getElementById('startScreen');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const finalScoreElement = document.getElementById('finalScore');
+        const maxComboElement = document.getElementById('maxCombo');
+        const burgersCaughtElement = document.getElementById('burgersCaught');
+        const startBtn = document.getElementById('startBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const leftBtn = document.getElementById('leftBtn');
+        const rightBtn = document.getElementById('rightBtn');
+        const shieldIndicator = document.getElementById('shieldIndicator');
+        const magnetIndicator = document.getElementById('magnetIndicator');
+        const slowmoIndicator = document.getElementById('slowmoIndicator');
+        const doublePointsIndicator = document.getElementById('doublePointsIndicator');
+        const levelElement = document.getElementById('level');
+        const finalLevelElement = document.getElementById('finalLevel');
+        const fpsCounter = document.getElementById('fpsCounter');
+
+        // Настройки игры - увеличенная динамика
+        const gameSettings = {
+            initialPlayerSpeed: 8,
+            initialItemSpeed: 3,
+            maxItemSpeed: 10,
+            speedIncreaseInterval: 8000, // Быстрее увеличение скорости
+            speedIncreaseAmount: 0.3,
+            burgerSpawnChance: 0.05, // Больше бургеров
+            bombSpawnChance: 0.025, // Больше бомб
+            powerUpSpawnChance: 0.01, // Больше бонусов
+            comboTimeWindow: 1800, // Уменьшено время для комбо
+            maxComboMultiplier: 6, // Увеличен максимальный комбо
+            pointsPerLevel: 800 // Быстрее повышение уровня
+        };
+
+        // Игровые переменные
+        let score = 0;
+        let lives = 3;
+        let level = 1;
+        let gameRunning = false;
+        let animationId;
+        let lastSpeedIncrease = 0;
+        let currentItemSpeed = gameSettings.initialItemSpeed;
+        let comboMultiplier = 1;
+        let comboTimeout;
+        let lastBurgerTime = 0;
+        let maxCombo = 1;
+        let burgersCaught = 0;
+        let lastFrameTime = 0;
+        let frameCount = 0;
+        let fps = 60;
+        let screenShake = 0;
+        
+        let powerUps = {
+            shield: { active: false, timeLeft: 0, duration: 10000 },
+            magnet: { active: false, timeLeft: 0, duration: 8000 },
+            slowmo: { active: false, timeLeft: 0, duration: 5000 },
+            doublePoints: { active: false, timeLeft: 0, duration: 7000 }
+        };
+
+        // Размеры игровых объектов
+        const playerWidth = 80;
+        const playerHeight = 60;
+        const itemSize = 40;
+
+        // Позиция игрока и состояние управления
+        let player = {
+            x: canvas.width / 2 - playerWidth / 2,
+            y: canvas.height - playerHeight - 20,
+            width: playerWidth,
+            height: playerHeight,
+            speed: gameSettings.initialPlayerSpeed,
+            movingLeft: false,
+            movingRight: false
+        };
+
+        // Массивы для падающих предметов
+        let burgers = [];
+        let bombs = [];
+        let powerUpsList = [];
+        let particles = [];
+
+        // Создание падающего предмета
+        function createFallingItem(type) {
+            const x = Math.random() * (canvas.width - itemSize);
+            
+            if (type === 'burger') {
+                const burgerType = Math.random();
+                let burgerVariant = 'normal';
+                
+                if (burgerType < 0.06) { // 6% шанс золотого бургера
+                    burgerVariant = 'golden';
+                } else if (burgerType < 0.14) { // 8% шанс двойного бургера
+                    burgerVariant = 'double';
+                } else if (burgerType < 0.18) { // 4% шанс тройного бургера
+                    burgerVariant = 'triple';
+                }
+                
+                burgers.push({
+                    x: x,
+                    y: -itemSize,
+                    width: itemSize,
+                    height: itemSize,
+                    speed: currentItemSpeed + Math.random() * 0.8, // Больше вариативности
+                    type: burgerVariant
+                });
+            } else if (type === 'bomb') {
+                const bombType = Math.random();
+                let bombVariant = 'normal';
+                
+                if (bombType < 0.04) { // 4% шанс черной бомбы
+                    bombVariant = 'black';
+                } else if (bombType < 0.08) { // 4% шанс мигающей бомбы
+                    bombVariant = 'blinking';
+                } else if (bombType < 0.11) { // 3% шанс ракетной бомбы
+                    bombVariant = 'rocket';
+                }
+                
+                bombs.push({
+                    x: x,
+                    y: -itemSize,
+                    width: itemSize,
+                    height: itemSize,
+                    speed: currentItemSpeed + Math.random() * 0.8,
+                    type: bombVariant,
+                    blinkState: true,
+                    blinkTimer: 0
+                });
+            } else if (type === 'powerup') {
+                const powerUpTypes = ['shield', 'magnet', 'slowmo', 'life', 'doublePoints'];
+                const powerUpType = powerUpTypes[Math.floor(Math.random() * powerUpTypes.length)];
+                
+                powerUpsList.push({
+                    x: x,
+                    y: -itemSize,
+                    width: itemSize,
+                    height: itemSize,
+                    speed: currentItemSpeed + Math.random() * 0.8,
+                    type: powerUpType
+                });
+            }
+        }
+
+        // Создание частиц для эффектов
+        function createParticles(x, y, color, count = 10) {
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    size: Math.random() * 8 + 2,
+                    color: color,
+                    speedX: (Math.random() - 0.5) * 12, // Более разлетающиеся частицы
+                    speedY: (Math.random() - 0.5) * 12,
+                    life: 1
+                });
+            }
+        }
+
+        // Отрисовка игрока (кабана) - улучшенная графика
+        function drawPlayer() {
+            // Эффект тряски экрана
+            let shakeX = 0;
+            let shakeY = 0;
+            if (screenShake > 0) {
+                shakeX = (Math.random() - 0.5) * screenShake;
+                shakeY = (Math.random() - 0.5) * screenShake;
+                screenShake *= 0.9; // Затухание тряски
+                if (screenShake < 0.5) screenShake = 0;
+            }
+            
+            ctx.save();
+            ctx.translate(shakeX, shakeY);
+            
+            // Добавляем эффект щита если активен
+            if (powerUps.shield.active) {
+                ctx.strokeStyle = '#00FFFF';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(player.x + player.width/2, player.y + player.height/2, player.width/2 + 10, 0, Math.PI * 2);
+                ctx.stroke();
+                
+                // Пульсирующий эффект
+                const pulse = Math.sin(Date.now() / 200) * 3;
+                ctx.strokeStyle = `rgba(0, 255, 255, ${0.5 + pulse/10})`;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(player.x + player.width/2, player.y + player.height/2, player.width/2 + 15 + pulse, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            
+            // Тело кабана с улучшенной графикой
+            ctx.fillStyle = '#8B4513';
+            ctx.beginPath();
+            ctx.roundRect(player.x, player.y, player.width, player.height, 15);
+            ctx.fill();
+            
+            // Тень под кабаном
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            ctx.beginPath();
+            ctx.ellipse(player.x + player.width/2, player.y + player.height + 5, player.width/2, 8, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Уши
+            ctx.fillStyle = '#A0522D';
+            ctx.beginPath();
+            ctx.ellipse(player.x - 5, player.y + 10, 8, 12, 0, 0, Math.PI * 2);
+            ctx.ellipse(player.x + player.width + 5, player.y + 10, 8, 12, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Глаза с бликами
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(player.x + 20, player.y + 20, 8, 0, Math.PI * 2);
+            ctx.arc(player.x + player.width - 20, player.y + 20, 8, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(player.x + 20, player.y + 20, 4, 0, Math.PI * 2);
+            ctx.arc(player.x + player.width - 20, player.y + 20, 4, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Блики в глазах
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(player.x + 18, player.y + 18, 2, 0, Math.PI * 2);
+            ctx.arc(player.x + player.width - 22, player.y + 18, 2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Нос
+            ctx.fillStyle = 'pink';
+            ctx.beginPath();
+            ctx.ellipse(player.x + player.width/2, player.y + player.height - 10, 15, 10, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Ноздри
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(player.x + player.width/2 - 5, player.y + player.height - 10, 2, 0, Math.PI * 2);
+            ctx.arc(player.x + player.width/2 + 5, player.y + player.height - 10, 2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Эффект магнита
+            if (powerUps.magnet.active) {
+                ctx.strokeStyle = '#FFD700';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.arc(player.x + player.width/2, player.y + player.height/2, 150, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+            
+            ctx.restore();
+        }
+
+        // Отрисовка бургера с улучшенной графикой
+        function drawBurger(burger) {
+            // Свечение для особых бургеров
+            if (burger.type === 'golden') {
+                ctx.shadowColor = '#FFD700';
+                ctx.shadowBlur = 15;
+            } else if (burger.type === 'double') {
+                ctx.shadowColor = '#8B0000';
+                ctx.shadowBlur = 10;
+            } else if (burger.type === 'triple') {
+                ctx.shadowColor = '#4B0082';
+                ctx.shadowBlur = 12;
+            }
+            
+            // Рамка для особых бургеров
+            if (burger.type !== 'normal') {
+                ctx.fillStyle = burger.type === 'golden' ? '#FFD700' : 
+                               burger.type === 'double' ? '#8B0000' : '#4B0082';
+                ctx.beginPath();
+                ctx.roundRect(burger.x - 3, burger.y - 3, burger.width + 6, burger.height + 6, 10);
+                ctx.fill();
+            }
+            
+            // Нижняя булочка
+            ctx.fillStyle = burger.type === 'golden' ? '#FFA500' : 
+                           burger.type === 'double' ? '#8B4513' : 
+                           burger.type === 'triple' ? '#654321' : '#F4A460';
+            ctx.beginPath();
+            ctx.roundRect(burger.x, burger.y + burger.height*0.75, burger.width, burger.height/4, 5);
+            ctx.fill();
+            
+            // Мясо
+            ctx.fillStyle = burger.type === 'golden' ? '#B8860B' : 
+                           burger.type === 'double' ? '#8B0000' : 
+                           burger.type === 'triple' ? '#800000' : '#8B4513';
+            ctx.beginPath();
+            ctx.roundRect(burger.x + 5, burger.y + burger.height*0.5, burger.width - 10, burger.height/4, 5);
+            ctx.fill();
+            
+            // Второй слой мяса для двойного/тройного бургера
+            if (burger.type === 'double' || burger.type === 'triple') {
+                ctx.fillStyle = burger.type === 'double' ? '#8B0000' : '#800000';
+                ctx.beginPath();
+                ctx.roundRect(burger.x + 5, burger.y + burger.height*0.35, burger.width - 10, burger.height/4, 5);
+                ctx.fill();
+            }
+            
+            // Третий слой мяса для тройного бургера
+            if (burger.type === 'triple') {
+                ctx.fillStyle = '#800000';
+                ctx.beginPath();
+                ctx.roundRect(burger.x + 5, burger.y + burger.height*0.2, burger.width - 10, burger.height/4, 5);
+                ctx.fill();
+            }
+            
+            // Салат
+            ctx.fillStyle = burger.type === 'golden' ? '#ADFF2F' : 
+                           burger.type === 'double' ? '#32CD32' : 
+                           burger.type === 'triple' ? '#228B22' : '#32CD32';
+            const saladHeight = burger.type === 'triple' ? burger.height*0.15 : burger.height/4;
+            const saladY = burger.type === 'triple' ? burger.y + burger.height*0.05 : burger.y + burger.height*0.25;
+            ctx.beginPath();
+            ctx.roundRect(burger.x + 3, saladY, burger.width - 6, saladHeight, 10);
+            ctx.fill();
+            
+            // Верхняя булочка
+            ctx.fillStyle = burger.type === 'golden' ? '#FFA500' : 
+                           burger.type === 'double' ? '#8B4513' : 
+                           burger.type === 'triple' ? '#654321' : '#F4A460';
+            ctx.beginPath();
+            ctx.roundRect(burger.x, burger.y, burger.width, burger.height/4, 10);
+            ctx.fill();
+            
+            // Семена кунжута
+            ctx.fillStyle = burger.type === 'golden' ? '#FFF' : 
+                           burger.type === 'double' ? '#FFF8DC' : 
+                           burger.type === 'triple' ? '#F5F5DC' : '#FFF8DC';
+            ctx.beginPath();
+            ctx.arc(burger.x + 10, burger.y + 5, 2, 0, Math.PI * 2);
+            ctx.arc(burger.x + burger.width - 10, burger.y + 8, 2, 0, Math.PI * 2);
+            ctx.arc(burger.x + 20, burger.y + 3, 2, 0, Math.PI * 2);
+            ctx.arc(burger.x + burger.width - 20, burger.y + 10, 2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Сбрасываем свечение
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+        }
+
+        // Отрисовка бомбы с улучшенной графикой
+        function drawBomb(bomb) {
+            // Мигающая бомба
+            if (bomb.type === 'blinking') {
+                bomb.blinkTimer += 16;
+                if (bomb.blinkTimer > 200) {
+                    bomb.blinkState = !bomb.blinkState;
+                    bomb.blinkTimer = 0;
+                }
+                
+                if (bomb.blinkState) {
+                    ctx.fillStyle = '#DC143C';
+                    ctx.shadowColor = '#FF0000';
+                    ctx.shadowBlur = 10;
+                } else {
+                    ctx.fillStyle = '#FF4500';
+                    ctx.shadowColor = '#FF4500';
+                    ctx.shadowBlur = 5;
+                }
+            } 
+            // Черная бомба
+            else if (bomb.type === 'black') {
+                ctx.fillStyle = '#2F4F4F';
+                ctx.shadowColor = '#FF0000';
+                ctx.shadowBlur = 15;
+            } 
+            // Ракетная бомба
+            else if (bomb.type === 'rocket') {
+                ctx.fillStyle = '#4682B4';
+                ctx.shadowColor = '#1E90FF';
+                ctx.shadowBlur = 10;
+                
+                // Огненный хвост
+                ctx.fillStyle = '#FF4500';
+                ctx.beginPath();
+                ctx.moveTo(bomb.x + bomb.width/2, bomb.y + bomb.height);
+                ctx.lineTo(bomb.x + bomb.width/4, bomb.y + bomb.height + 10);
+                ctx.lineTo(bomb.x + bomb.width*3/4, bomb.y + bomb.height + 10);
+                ctx.closePath();
+                ctx.fill();
+                
+                ctx.fillStyle = '#4682B4';
+            } 
+            // Обычная бомба
+            else {
+                ctx.fillStyle = '#DC143C';
+                ctx.shadowColor = '#FF0000';
+                ctx.shadowBlur = 5;
+            }
+            
+            // Корпус бомбы
+            ctx.beginPath();
+            ctx.roundRect(bomb.x, bomb.y, bomb.width, bomb.height, 10);
+            ctx.fill();
+            
+            // Верхняя часть бомбы
+            ctx.fillStyle = '#333';
+            ctx.beginPath();
+            ctx.roundRect(bomb.x + bomb.width/3, bomb.y - 5, bomb.width/3, 8, 3);
+            ctx.fill();
+            
+            // Искра
+            ctx.strokeStyle = '#FFD700';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(bomb.x + bomb.width/2, bomb.y - 5);
+            ctx.lineTo(bomb.x + bomb.width/2, bomb.y - 15);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(bomb.x + bomb.width/2 - 3, bomb.y - 10);
+            ctx.lineTo(bomb.x + bomb.width/2 + 3, bomb.y - 10);
+            ctx.stroke();
+            
+            // Сбрасываем свечение
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+        }
+
+        // Отрисовка бонуса
+        function drawPowerUp(powerUp) {
+            let color, symbol;
+            
+            switch(powerUp.type) {
+                case 'shield':
+                    color = '#00FFFF';
+                    symbol = '🛡️';
+                    break;
+                case 'magnet':
+                    color = '#FFD700';
+                    symbol = '🧲';
+                    break;
+                case 'slowmo':
+                    color = '#9370DB';
+                    symbol = '🐌';
+                    break;
+                case 'life':
+                    color = '#32CD32';
+                    symbol = '❤️';
+                    break;
+                case 'doublePoints':
+                    color = '#FF1493';
+                    symbol = '✯✯';
+                    break;
+            }
+            
+            // Фон бонуса с градиентом
+            const gradient = ctx.createLinearGradient(powerUp.x, powerUp.y, powerUp.x + powerUp.width, powerUp.y + powerUp.height);
+            gradient.addColorStop(0, color);
+            gradient.addColorStop(1, lightenColor(color, 30));
+            
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.roundRect(powerUp.x, powerUp.y, powerUp.width, powerUp.height, 10);
+            ctx.fill();
+            
+            // Символ бонуса
+            ctx.font = '20px Arial';
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(symbol, powerUp.x + powerUp.width/2, powerUp.y + powerUp.height/2);
+            
+            // Свечение
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 15;
+            ctx.fill();
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+        }
+
+        // Функция для осветления цвета
+        function lightenColor(color, percent) {
+            const num = parseInt(color.replace("#", ""), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = (num >> 16) + amt;
+            const G = (num >> 8 & 0x00FF) + amt;
+            const B = (num & 0x0000FF) + amt;
+            return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+                (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+                (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+        }
+
+        // Отрисовка частиц
+        function drawParticles() {
+            particles.forEach((particle, index) => {
+                ctx.globalAlpha = particle.life;
+                ctx.fillStyle = particle.color;
+                ctx.beginPath();
+                ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Обновление частицы
+                particle.x += particle.speedX;
+                particle.y += particle.speedY;
+                particle.life -= 0.03; // Быстрее исчезают
+                
+                // Удаление частицы, если она "умерла"
+                if (particle.life <= 0) {
+                    particles.splice(index, 1);
+                }
+            });
+            ctx.globalAlpha = 1;
+        }
+
+        // Обновление позиции игрока
+        function updatePlayer() {
+            if (player.movingLeft) {
+                player.x = Math.max(0, player.x - player.speed);
+            }
+            if (player.movingRight) {
+                player.x = Math.min(canvas.width - player.width, player.x + player.speed);
+            }
+        }
+
+        // Обновление бонусов
+        function updatePowerUps() {
+            Object.keys(powerUps).forEach(key => {
+                if (powerUps[key].active) {
+                    powerUps[key].timeLeft -= 16; // Примерно 60 FPS
+                    
+                    // Обновление индикаторов
+                    const indicator = document.getElementById(`${key}Indicator`);
+                    if (indicator) {
+                        indicator.classList.toggle('active', powerUps[key].timeLeft > 0);
+                    }
+                    
+                    if (powerUps[key].timeLeft <= 0) {
+                        powerUps[key].active = false;
+                    }
+                }
+            });
+        }
+
+        // Проверка столкновений
+        function checkCollisions() {
+            // Проверка столкновений с бургерами
+            for (let i = burgers.length - 1; i >= 0; i--) {
+                const burger = burgers[i];
+                if (
+                    player.x < burger.x + burger.width &&
+                    player.x + player.width > burger.x &&
+                    player.y < burger.y + burger.height &&
+                    player.y + player.height > burger.y
+                ) {
+                    // Игрок поймал бургер
+                    const now = Date.now();
+                    let points = 10;
+                    
+                    if (burger.type === 'golden') points = 50;
+                    if (burger.type === 'double') points = 20;
+                    if (burger.type === 'triple') points = 30;
+                    
+                    // Удвоение очков при активном бонусе
+                    if (powerUps.doublePoints.active) points *= 2;
+                    
+                    // Система комбо
+                    if (now - lastBurgerTime < gameSettings.comboTimeWindow) {
+                        comboMultiplier = Math.min(gameSettings.maxComboMultiplier, comboMultiplier + 0.3); // Быстрее растет комбо
+                        comboDisplay.textContent = `COMBO x${comboMultiplier.toFixed(1)}!`;
+                        comboDisplay.style.display = 'block';
+                        
+                        // Анимация комбо
+                        comboDisplay.style.animation = 'none';
+                        setTimeout(() => {
+                            comboDisplay.style.animation = 'pulse 0.5s infinite alternate';
+                        }, 10);
+                    } else {
+                        comboMultiplier = 1;
+                        comboDisplay.style.display = 'none';
+                    }
+                    
+                    lastBurgerTime = now;
+                    maxCombo = Math.max(maxCombo, comboMultiplier);
+                    
+                    // Сброс таймера комбо
+                    clearTimeout(comboTimeout);
+                    comboTimeout = setTimeout(() => {
+                        comboMultiplier = 1;
+                        comboDisplay.style.display = 'none';
+                    }, gameSettings.comboTimeWindow);
+                    
+                    score += Math.floor(points * comboMultiplier);
+                    scoreElement.textContent = score;
+                    burgersCaught++;
+                    
+                    // Эффект частиц
+                    let particleColor = '#32CD32';
+                    if (burger.type === 'golden') particleColor = '#FFD700';
+                    if (burger.type === 'double') particleColor = '#8B0000';
+                    if (burger.type === 'triple') particleColor = '#4B0082';
+                    
+                    createParticles(
+                        burger.x + burger.width/2, 
+                        burger.y + burger.height/2, 
+                        particleColor,
+                        20 // Больше частиц
+                    );
+                    
+                    burgers.splice(i, 1);
+                    
+                    // Проверка повышения уровня
+                    checkLevelUp();
+                } else if (burger.y > canvas.height) {
+                    burgers.splice(i, 1);
+                }
+            }
+            
+            // Проверка столкновений с бомбами
+            for (let i = bombs.length - 1; i >= 0; i--) {
+                const bomb = bombs[i];
+                if (
+                    player.x < bomb.x + bomb.width &&
+                    player.x + player.width > bomb.x &&
+                    player.y < bomb.y + bomb.height &&
+                    player.y + player.height > bomb.y
+                ) {
+                    // Игрок столкнулся с бомбой
+                    if (!powerUps.shield.active) {
+                        let damage = 1;
+                        if (bomb.type === 'black') damage = 2;
+                        if (bomb.type === 'rocket') damage = 2;
+                        
+                        lives -= damage;
+                        livesElement.textContent = lives;
+                        
+                        // Эффект тряски
+                        screenShake = 15;
+                        
+                        // Эффект частиц
+                        let particleColor = '#DC143C';
+                        if (bomb.type === 'black') particleColor = '#2F4F4F';
+                        if (bomb.type === 'blinking') particleColor = '#FF4500';
+                        if (bomb.type === 'rocket') particleColor = '#4682B4';
+                        
+                        createParticles(
+                            bomb.x + bomb.width/2, 
+                            bomb.y + bomb.height/2, 
+                            particleColor,
+                            25 // Больше частиц при взрыве
+                        );
+                        
+                        if (lives <= 0) {
+                            gameOver();
+                        }
+                    } else {
+                        // Щит поглотил бомбу
+                        createParticles(
+                            bomb.x + bomb.width/2, 
+                            bomb.y + bomb.height/2, 
+                            '#00FFFF',
+                            15
+                        );
+                    }
+                    
+                    bombs.splice(i, 1);
+                } else if (bomb.y > canvas.height) {
+                    bombs.splice(i, 1);
+                }
+            }
+            
+            // Проверка столкновений с бонусами
+            for (let i = powerUpsList.length - 1; i >= 0; i--) {
+                const powerUp = powerUpsList[i];
+                if (
+                    player.x < powerUp.x + powerUp.width &&
+                    player.x + player.width > powerUp.x &&
+                    player.y < powerUp.y + powerUp.height &&
+                    player.y + player.height > powerUp.y
+                ) {
+                    // Активация бонуса
+                    if (powerUp.type === 'life') {
+                        lives = Math.min(5, lives + 1);
+                        livesElement.textContent = lives;
+                    } else {
+                        powerUps[powerUp.type].active = true;
+                        powerUps[powerUp.type].timeLeft = powerUps[powerUp.type].duration;
+                    }
+                    
+                    // Эффект частиц
+                    let color;
+                    switch(powerUp.type) {
+                        case 'shield': color = '#00FFFF'; break;
+                        case 'magnet': color = '#FFD700'; break;
+                        case 'slowmo': color = '#9370DB'; break;
+                        case 'life': color = '#32CD32'; break;
+                        case 'doublePoints': color = '#FF1493'; break;
+                    }
+                    createParticles(
+                        powerUp.x + powerUp.width/2, 
+                        powerUp.y + powerUp.height/2, 
+                        color,
+                        20
+                    );
+                    
+                    powerUpsList.splice(i, 1);
+                } else if (powerUp.y > canvas.height) {
+                    powerUpsList.splice(i, 1);
+                }
+            }
+            
+            // Обновление комбо-метра
+            const timeSinceLastBurger = Date.now() - lastBurgerTime;
+            const comboProgress = Math.max(0, 1 - timeSinceLastBurger / gameSettings.comboTimeWindow);
+            comboMeter.style.width = `${comboProgress * 100}%`;
+            
+            // Магнитный эффект
+            if (powerUps.magnet.active) {
+                burgers.forEach(burger => {
+                    const dx = (player.x + player.width/2) - (burger.x + burger.width/2);
+                    const dy = (player.y + player.height/2) - (burger.y + burger.height/2);
+                    const distance = Math.sqrt(dx*dx + dy*dy);
+                    
+                    if (distance < 150) {
+                        burger.x += dx * 0.08; // Сильнее притяжение
+                        burger.y += dy * 0.08;
+                    }
+                });
+            }
+        }
+
+        // Проверка повышения уровня
+        function checkLevelUp() {
+            const newLevel = Math.floor(score / gameSettings.pointsPerLevel) + 1;
+            if (newLevel > level) {
+                level = newLevel;
+                levelElement.textContent = level;
+                
+                // Увеличиваем сложность с каждым уровнем
+                currentItemSpeed = Math.min(
+                    gameSettings.maxItemSpeed, 
+                    gameSettings.initialItemSpeed + (level - 1) * 0.4 // Быстрее увеличивается сложность
+                );
+                
+                // Эффект частиц для уровня
+                createParticles(
+                    canvas.width / 2, 
+                    canvas.height / 2, 
+                    '#FFD700',
+                    40
+                );
+            }
+        }
+
+        // Обновление позиций падающих предметов
+        function updateItems() {
+            const speedMultiplier = powerUps.slowmo.active ? 0.5 : 1;
+            
+            // Обновление бургеров
+            burgers.forEach(burger => {
+                burger.y += burger.speed * speedMultiplier;
+            });
+            
+            // Обновление бомб
+            bombs.forEach(bomb => {
+                bomb.y += bomb.speed * speedMultiplier;
+                
+                // Дополнительное поведение для ракетных бомб
+                if (bomb.type === 'rocket') {
+                    bomb.y += 0.5; // Немного быстрее
+                }
+            });
+            
+            // Обновление бонусов
+            powerUpsList.forEach(powerUp => {
+                powerUp.y += powerUp.speed * speedMultiplier;
+            });
+        }
+
+        // Увеличение скорости со временем
+        function updateDifficulty(currentTime) {
+            if (currentTime - lastSpeedIncrease > gameSettings.speedIncreaseInterval) {
+                currentItemSpeed = Math.min(
+                    gameSettings.maxItemSpeed, 
+                    currentItemSpeed + gameSettings.speedIncreaseAmount
+                );
+                lastSpeedIncrease = currentTime;
+            }
+        }
+
+        // Очистка канваса и отрисовка всех объектов
+        function draw() {
+            // Очистка канваса
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Рисуем фон (космос)
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#0c1445');
+            gradient.addColorStop(0.5, '#1a1a2e');
+            gradient.addColorStop(1, '#16213e');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Рисуем звезды
+            drawStars();
+            
+            // Рисуем землю
+            ctx.fillStyle = '#1e3d1e';
+            ctx.fillRect(0, canvas.height * 0.85, canvas.width, canvas.height * 0.15);
+            
+            // Рисуем траву
+            ctx.fillStyle = '#2a5a2a';
+            for (let i = 0; i < canvas.width; i += 8) {
+                ctx.fillRect(i, canvas.height * 0.85, 4, -8 - Math.random() * 8);
+            }
+            
+            // Рисуем бургеры
+            burgers.forEach(burger => {
+                drawBurger(burger);
+            });
+            
+            // Рисуем бомбы
+            bombs.forEach(bomb => {
+                drawBomb(bomb);
+            });
+            
+            // Рисуем бонусы
+            powerUpsList.forEach(powerUp => {
+                drawPowerUp(powerUp);
+            });
+            
+            // Рисуем игрока
+            drawPlayer();
+            
+            // Рисуем частицы
+            drawParticles();
+        }
+
+        // Рисуем звезды на фоне
+        function drawStars() {
+            ctx.fillStyle = 'white';
+            for (let i = 0; i < 50; i++) {
+                const x = (i * 137) % canvas.width;
+                const y = (i * 57) % canvas.height;
+                const size = Math.random() * 1.5;
+                ctx.globalAlpha = 0.7 + Math.random() * 0.3;
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+        }
+
+        // Подсчет FPS
+        function updateFPS(currentTime) {
+            frameCount++;
+            
+            if (currentTime - lastFrameTime >= 1000) {
+                fps = Math.round((frameCount * 1000) / (currentTime - lastFrameTime));
+                fpsCounter.textContent = `FPS: ${fps}`;
+                frameCount = 0;
+                lastFrameTime = currentTime;
+            }
+        }
+
+        // Главный игровой цикл
+        function gameLoop(timestamp) {
+            if (!gameRunning) return;
+            
+            updateFPS(timestamp);
+            updatePlayer();
+            updateItems();
+            updatePowerUps();
+            checkCollisions();
+            updateDifficulty(timestamp);
+            draw();
+            
+            // Случайное создание новых предметов
+            if (Math.random() < gameSettings.burgerSpawnChance) {
+                createFallingItem('burger');
+            }
+            
+            if (Math.random() < gameSettings.bombSpawnChance) {
+                createFallingItem('bomb');
+            }
+            
+            if (Math.random() < gameSettings.powerUpSpawnChance) {
+                createFallingItem('powerup');
+            }
+            
+            animationId = requestAnimationFrame(gameLoop);
+        }
+
+        // Начало игры
+        function startGame() {
+            score = 0;
+            lives = 3;
+            level = 1;
+            burgers = [];
+            bombs = [];
+            powerUpsList = [];
+            particles = [];
+            currentItemSpeed = gameSettings.initialItemSpeed;
+            lastSpeedIncrease = 0;
+            comboMultiplier = 1;
+            maxCombo = 1;
+            burgersCaught = 0;
+            frameCount = 0;
+            lastFrameTime = performance.now();
+            screenShake = 0;
+            
+            // Сброс бонусов
+            Object.keys(powerUps).forEach(key => {
+                powerUps[key].active = false;
+                powerUps[key].timeLeft = 0;
+            });
+            
+            // Сброс индикаторов
+            shieldIndicator.classList.remove('active');
+            magnetIndicator.classList.remove('active');
+            slowmoIndicator.classList.remove('active');
+            doublePointsIndicator.classList.remove('active');
+            
+            scoreElement.textContent = score;
+            livesElement.textContent = lives;
+            levelElement.textContent = level;
+            comboElement.textContent = '1x';
+            comboDisplay.style.display = 'none';
+            
+            player.x = canvas.width / 2 - playerWidth / 2;
+            player.movingLeft = false;
+            player.movingRight = false;
+            
+            startScreen.classList.remove('active');
+            gameOverScreen.classList.remove('active');
+            
+            gameRunning = true;
+            animationId = requestAnimationFrame(gameLoop);
+        }
+
+        // Конец игры
+        function gameOver() {
+            gameRunning = false;
+            cancelAnimationFrame(animationId);
+            
+            finalScoreElement.textContent = score;
+            maxComboElement.textContent = maxCombo.toFixed(1);
+            burgersCaughtElement.textContent = burgersCaught;
+            finalLevelElement.textContent = level;
+            gameOverScreen.classList.add('active');
+            
+            // Отправляем результат в Telegram (если нужно)
+            if (tg && tg.sendData) {
+                tg.sendData(JSON.stringify({
+                    score: score,
+                    maxCombo: maxCombo,
+                    burgersCaught: burgersCaught,
+                    level: level
+                }));
+            }
+        }
+
+        // Обработчики событий для кнопок управления
+        function setupTouchControls() {
+            // Обработчики для левой кнопки
+            const handleLeftStart = (e) => {
+                e.preventDefault();
+                player.movingLeft = true;
+            };
+            
+            const handleLeftEnd = (e) => {
+                e.preventDefault();
+                player.movingLeft = false;
+            };
+            
+            leftBtn.addEventListener('touchstart', handleLeftStart);
+            leftBtn.addEventListener('touchend', handleLeftEnd);
+            leftBtn.addEventListener('touchcancel', handleLeftEnd);
+            
+            // Обработчики для правой кнопки
+            const handleRightStart = (e) => {
+                e.preventDefault();
+                player.movingRight = true;
+            };
+            
+            const handleRightEnd = (e) => {
+                e.preventDefault();
+                player.movingRight = false;
+            };
+            
+            rightBtn.addEventListener('touchstart', handleRightStart);
+            rightBtn.addEventListener('touchend', handleRightEnd);
+            rightBtn.addEventListener('touchcancel', handleRightEnd);
+            
+            // Также добавляем поддержку мыши для тестирования
+            leftBtn.addEventListener('mousedown', handleLeftStart);
+            leftBtn.addEventListener('mouseup', handleLeftEnd);
+            leftBtn.addEventListener('mouseleave', handleLeftEnd);
+            
+            rightBtn.addEventListener('mousedown', handleRightStart);
+            rightBtn.addEventListener('mouseup', handleRightEnd);
+            rightBtn.addEventListener('mouseleave', handleRightEnd);
+        }
+
+        // Также добавляем поддержку клавиатуры для тестирования на ПК
+        function setupKeyboardControls() {
+            document.addEventListener('keydown', (e) => {
+                if (!gameRunning) return;
+                
+                if (e.key === 'ArrowLeft' || e.key === 'a') {
+                    player.movingLeft = true;
+                } else if (e.key === 'ArrowRight' || e.key === 'd') {
+                    player.movingRight = true;
+                }
+            });
+            
+            document.addEventListener('keyup', (e) => {
+                if (e.key === 'ArrowLeft' || e.key === 'a') {
+                    player.movingLeft = false;
+                } else if (e.key === 'ArrowRight' || e.key === 'd') {
+                    player.movingRight = false;
+                }
+            });
+        }
+
+        // Инициализация игры при загрузке страницы
+        window.addEventListener('load', () => {
+            // Создаем эффекты фона
+            createBackgroundEffects();
+            
+            // Настраиваем управление
+            setupTouchControls();
+            setupKeyboardControls();
+            
+            // Обработчики кнопок
+            startBtn.addEventListener('click', startGame);
+            restartBtn.addEventListener('click', startGame);
+            
+            // Адаптируем размер канваса под экран
+            function resizeCanvas() {
+                const container = canvas.parentElement.parentElement;
+                const containerWidth = container.clientWidth;
+                
+                if (containerWidth < 480) {
+                    const scale = containerWidth / 480;
+                    canvas.style.width = `${containerWidth}px`;
+                    canvas.style.height = `${600 * scale}px`;
+                } else {
+                    canvas.style.width = '480px';
+                    canvas.style.height = '600px';
+                }
+            }
+            
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+        });
+
+        // Оптимизация для мобильных устройств
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && gameRunning) {
+                // Пауза при сворачивании вкладки
+                gameRunning = false;
+                cancelAnimationFrame(animationId);
+            } else if (!document.hidden && !gameRunning && lives > 0) {
+                // Возобновление при возвращении
+                gameRunning = true;
+                lastFrameTime = performance.now();
+                animationId = requestAnimationFrame(gameLoop);
+            }
+        });
+    </script>
+</body>
+</html>
