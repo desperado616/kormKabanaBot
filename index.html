@@ -35,16 +35,16 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: safe center;
+            justify-content: center;
             min-height: 100vh;
             min-height: 100dvh;
             color: white;
             overflow: hidden;
-            padding: 10px;
-            padding-top: calc(10px + var(--safe-area-inset-top));
-            padding-bottom: calc(10px + var(--safe-area-inset-bottom));
-            padding-left: calc(10px + var(--safe-area-inset-left));
-            padding-right: calc(10px + var(--safe-area-inset-right));
+            padding: 5px;
+            padding-top: calc(5px + var(--safe-area-inset-top));
+            padding-bottom: calc(5px + var(--safe-area-inset-bottom));
+            padding-left: calc(5px + var(--safe-area-inset-left));
+            padding-right: calc(5px + var(--safe-area-inset-right));
             position: relative;
         }
 
@@ -72,20 +72,19 @@
 
         .container {
             text-align: center;
-            max-width: min(500px, 95vw);
+            max-width: min(500px, 98vw);
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             z-index: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: safe center;
+            justify-content: center;
             flex: 0 0 auto;
-            margin: auto;
         }
 
         .header {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             text-align: center;
             background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(15px);
@@ -97,7 +96,7 @@
         }
 
         h1 {
-            font-size: clamp(20px, 5vw, 26px);
+            font-size: clamp(22px, 6vw, 28px);
             margin-bottom: 4px;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
             background: linear-gradient(45deg, #ff9a00, #ff6a00, #ff3d00);
@@ -116,9 +115,9 @@
         }
 
         .subtitle {
-            font-size: clamp(11px, 3vw, 13px);
+            font-size: clamp(13px, 3.5vw, 15px);
             opacity: 0.8;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             color: #e0e0e0;
             line-height: 1.3;
         }
@@ -129,9 +128,9 @@
             background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(15px);
             border-radius: 12px;
-            padding: 10px 14px;
-            margin-bottom: 10px;
-            font-size: clamp(13px, 3.5vw, 15px);
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            font-size: clamp(16px, 4vw, 18px);
             font-weight: bold;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -148,7 +147,7 @@
         }
 
         .info-label {
-            font-size: clamp(9px, 2.5vw, 11px);
+            font-size: clamp(11px, 3vw, 13px);
             opacity: 0.7;
             margin-bottom: 3px;
             color: #b0b0b0;
@@ -183,11 +182,40 @@
             overflow: hidden;
         }
 
+        .power-up-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 8px 0;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .power-up-indicator {
+            width: clamp(26px, 7vw, 32px);
+            height: clamp(26px, 7vw, 32px);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(14px, 3.5vw, 16px);
+            opacity: 0.5;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .power-up-indicator.active {
+            opacity: 1;
+            transform: scale(1.2);
+            box-shadow: 0 0 10px currentColor;
+        }
+
         .controls {
             display: flex;
             justify-content: space-between;
-            gap: 8px;
-            margin-top: 15px;
+            gap: 10px;
+            margin-top: 12px;
             width: 100%;
             flex-shrink: 0;
         }
@@ -197,9 +225,9 @@
             border: none;
             border-radius: 16px;
             color: white;
-            font-size: clamp(14px, 4vw, 18px);
+            font-size: clamp(16px, 4.5vw, 20px);
             font-weight: bold;
-            padding: clamp(10px, 3vw, 14px) clamp(10px, 2.5vw, 14px);
+            padding: clamp(12px, 3.5vw, 16px) clamp(12px, 3vw, 16px);
             cursor: pointer;
             box-shadow: 0 6px 15px rgba(255, 107, 0, 0.4);
             transition: all 0.2s ease;
@@ -208,7 +236,7 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            min-height: clamp(45px, 12vw, 55px);
+            min-height: clamp(50px, 14vw, 60px);
             position: relative;
             overflow: hidden;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
@@ -243,7 +271,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: safe center;
+            justify-content: center;
             background: rgba(10, 10, 20, 0.95);
             backdrop-filter: blur(10px);
             z-index: 10;
@@ -262,7 +290,7 @@
 
         .instructions {
             background: rgba(255, 255, 255, 0.08);
-            padding: 18px;
+            padding: 20px;
             border-radius: 16px;
             margin: 15px 0;
             text-align: left;
@@ -274,16 +302,16 @@
         }
 
         .instructions ul {
-            padding-left: 18px;
-            margin-top: 10px;
+            padding-left: 20px;
+            margin-top: 12px;
         }
 
         .instructions li {
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             line-height: 1.4;
             display: flex;
             align-items: flex-start;
-            font-size: clamp(12px, 3vw, 14px);
+            font-size: clamp(14px, 3.5vw, 16px);
             color: #e0e0e0;
         }
 
@@ -296,12 +324,12 @@
 
         .screen h1 {
             margin-bottom: 15px;
-            font-size: clamp(22px, 6vw, 28px);
+            font-size: clamp(24px, 7vw, 32px);
         }
 
         .screen p {
             margin-bottom: 12px;
-            font-size: clamp(13px, 3.5vw, 15px);
+            font-size: clamp(14px, 4vw, 16px);
             color: #e0e0e0;
         }
 
@@ -310,9 +338,9 @@
             border: none;
             border-radius: 50px;
             color: white;
-            font-size: clamp(15px, 4vw, 18px);
+            font-size: clamp(16px, 4.5vw, 20px);
             font-weight: bold;
-            padding: clamp(12px, 3vw, 14px) clamp(25px, 7vw, 35px);
+            padding: clamp(14px, 4vw, 16px) clamp(30px, 8vw, 40px);
             cursor: pointer;
             box-shadow: 0 8px 20px rgba(255, 107, 0, 0.4);
             transition: all 0.3s ease;
@@ -339,54 +367,25 @@
         }
 
         .stats {
-            font-size: clamp(15px, 4vw, 18px);
+            font-size: clamp(16px, 4.5vw, 20px);
             margin: 15px 0;
             background: rgba(255, 255, 255, 0.08);
-            padding: 15px;
+            padding: 16px;
             border-radius: 12px;
             width: 100%;
-            max-width: min(280px, 85vw);
+            max-width: min(300px, 85vw);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .power-up-indicators {
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-            margin-top: 10px;
-            flex-wrap: wrap;
-            width: 100%;
-        }
-
-        .power-up-indicator {
-            width: clamp(20px, 5vw, 24px);
-            height: clamp(20px, 5vw, 24px);
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: clamp(11px, 3vw, 13px);
-            opacity: 0.5;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .power-up-indicator.active {
-            opacity: 1;
-            transform: scale(1.2);
-            box-shadow: 0 0 10px currentColor;
-        }
-
         .combo-display {
             position: absolute;
-            top: 8px;
-            right: 8px;
+            top: 10px;
+            right: 10px;
             background: rgba(0, 0, 0, 0.7);
-            padding: 6px 10px;
+            padding: 8px 12px;
             border-radius: 16px;
-            font-size: clamp(11px, 3vw, 14px);
+            font-size: clamp(13px, 3.5vw, 16px);
             font-weight: bold;
             display: none;
             animation: pulse 0.5s infinite alternate;
@@ -400,22 +399,22 @@
 
         .level-indicator {
             position: absolute;
-            top: 8px;
-            left: 8px;
+            top: 10px;
+            left: 10px;
             background: rgba(0, 0, 0, 0.7);
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: 16px;
-            font-size: clamp(11px, 3vw, 13px);
+            font-size: clamp(13px, 3.5vw, 15px);
             font-weight: bold;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .fps-counter {
             position: absolute;
-            bottom: 6px;
-            left: 8px;
+            bottom: 8px;
+            left: 10px;
             color: rgba(255, 255, 255, 0.4);
-            font-size: 9px;
+            font-size: 10px;
         }
 
         /* Анимации для частиц */
@@ -434,39 +433,65 @@
         /* Адаптивность для очень маленьких экранов */
         @media (max-height: 700px) {
             .container {
-                transform: scale(0.9);
                 padding: 5px;
             }
-        }
-
-        @media (max-height: 600px) {
-            .container {
-                transform: scale(0.85);
-                padding: 5px;
+            
+            .header {
+                margin-bottom: 8px;
+                padding: 10px;
+            }
+            
+            .game-info {
+                margin-bottom: 6px;
+                padding: 10px 14px;
             }
             
             .controls {
                 margin-top: 10px;
             }
+        }
+
+        @media (max-height: 600px) {
+            body {
+                padding: 3px;
+            }
+            
+            .container {
+                padding: 3px;
+            }
+            
+            .header {
+                margin-bottom: 6px;
+                padding: 8px;
+            }
             
             .game-info {
-                margin-bottom: 8px;
+                margin-bottom: 5px;
+                padding: 8px 12px;
+            }
+            
+            .power-up-indicators {
+                margin: 6px 0;
+            }
+            
+            .controls {
+                margin-top: 8px;
             }
         }
 
         @media (max-width: 350px) {
             .controls {
-                gap: 5px;
+                gap: 6px;
             }
             
             .control-btn {
-                padding: 8px 6px;
-                font-size: 12px;
-                min-height: 40px;
+                padding: 10px 8px;
+                font-size: 14px;
+                min-height: 45px;
             }
             
             .game-info {
-                padding: 8px 10px;
+                padding: 10px 12px;
             }
             
             .container {
@@ -478,12 +503,11 @@
         @media (orientation: landscape) and (max-height: 500px) {
             body {
                 padding: 5px;
-                justify-content: safe start;
+                justify-content: flex-start;
             }
             
             .container {
                 max-width: 100%;
-                transform: scale(0.8);
                 padding: 5px;
             }
             
@@ -511,12 +535,12 @@
         /* Фикс для Telegram WebApp */
         @media (max-height: 600px) and (max-width: 400px) {
             .container {
-                transform: scale(0.8);
+                transform: scale(1);
             }
             
             .screen {
-                padding: 10px;
-                justify-content: safe start;
+                padding: 15px;
+                justify-content: flex-start;
             }
             
             .instructions {
@@ -648,17 +672,17 @@
         const finalLevelElement = document.getElementById('finalLevel');
         const fpsCounter = document.getElementById('fpsCounter');
 
-        // Настройки игры - ЗАМЕДЛЕННЫЕ для лучшего геймплея
+        // Настройки игры - УВЕЛИЧЕННАЯ СКОРОСТЬ для более динамичного геймплея
         const gameSettings = {
-            initialPlayerSpeed: 6, // Медленнее
-            initialItemSpeed: 2,   // Медленнее
-            maxItemSpeed: 6,       // Медленнее
-            speedIncreaseInterval: 12000, // Реже увеличение скорости
-            speedIncreaseAmount: 0.15,    // Меньше увеличение
-            burgerSpawnChance: 0.035,     // Меньше бургеров
-            bombSpawnChance: 0.018,       // Меньше бомб
-            powerUpSpawnChance: 0.007,    // Меньше бонусов
-            comboTimeWindow: 2200,        // Больше времени для комбо
+            initialPlayerSpeed: 7, // Быстрее
+            initialItemSpeed: 3,   // Быстрее
+            maxItemSpeed: 7,       // Быстрее
+            speedIncreaseInterval: 10000, 
+            speedIncreaseAmount: 0.2,    
+            burgerSpawnChance: 0.045,     // Больше бургеров
+            bombSpawnChance: 0.022,       // Больше бомб
+            powerUpSpawnChance: 0.009,    // Больше бонусов
+            comboTimeWindow: 2000,        
             maxComboMultiplier: 5,        
             pointsPerLevel: 800           
         };
@@ -729,7 +753,7 @@
                     y: -itemSize,
                     width: itemSize,
                     height: itemSize,
-                    speed: currentItemSpeed + Math.random() * 0.5, // Меньше вариативности
+                    speed: currentItemSpeed + Math.random() * 0.7, // Больше вариативности
                     type: burgerVariant
                 });
             } else if (type === 'bomb') {
@@ -747,7 +771,7 @@
                     y: -itemSize,
                     width: itemSize,
                     height: itemSize,
-                    speed: currentItemSpeed + Math.random() * 0.5, // Меньше вариативности
+                    speed: currentItemSpeed + Math.random() * 0.7, // Больше вариативности
                     type: bombVariant,
                     blinkState: true,
                     blinkTimer: 0
@@ -761,7 +785,7 @@
                     y: -itemSize,
                     width: itemSize,
                     height: itemSize,
-                    speed: currentItemSpeed + Math.random() * 0.5, // Меньше вариативности
+                    speed: currentItemSpeed + Math.random() * 0.7, // Больше вариативности
                     type: powerUpType
                 });
             }
@@ -775,8 +799,8 @@
                     y: y,
                     size: Math.random() * 8 + 2,
                     color: color,
-                    speedX: (Math.random() - 0.5) * 8, // Меньше разлет
-                    speedY: (Math.random() - 0.5) * 8,
+                    speedX: (Math.random() - 0.5) * 10, // Больше разлет
+                    speedY: (Math.random() - 0.5) * 10,
                     life: 1
                 });
             }
@@ -1061,7 +1085,7 @@
                 
                 particle.x += particle.speedX;
                 particle.y += particle.speedY;
-                particle.life -= 0.02;
+                particle.life -= 0.03; // Быстрее исчезают
                 
                 if (particle.life <= 0) {
                     particles.splice(index, 1);
@@ -1118,7 +1142,7 @@
                     if (powerUps.doublePoints.active) points *= 2;
                     
                     if (now - lastBurgerTime < gameSettings.comboTimeWindow) {
-                        comboMultiplier = Math.min(gameSettings.maxComboMultiplier, comboMultiplier + 0.2);
+                        comboMultiplier = Math.min(gameSettings.maxComboMultiplier, comboMultiplier + 0.3); // Быстрее растет комбо
                         comboDisplay.textContent = `COMBO x${comboMultiplier.toFixed(1)}!`;
                         comboDisplay.style.display = 'block';
                         
@@ -1152,7 +1176,7 @@
                         burger.x + burger.width/2, 
                         burger.y + burger.height/2, 
                         particleColor,
-                        15
+                        18 // Больше частиц
                     );
                     
                     burgers.splice(i, 1);
@@ -1189,7 +1213,7 @@
                             bomb.x + bomb.width/2, 
                             bomb.y + bomb.height/2, 
                             particleColor,
-                            20
+                            22 // Больше частиц при взрыве
                         );
                         
                         if (lives <= 0) {
@@ -1239,7 +1263,7 @@
                         powerUp.x + powerUp.width/2, 
                         powerUp.y + powerUp.height/2, 
                         color,
-                        15
+                        18
                     );
                     
                     powerUpsList.splice(i, 1);
@@ -1259,8 +1283,8 @@
                     const distance = Math.sqrt(dx*dx + dy*dy);
                     
                     if (distance < 150) {
-                        burger.x += dx * 0.06;
-                        burger.y += dy * 0.06;
+                        burger.x += dx * 0.08; // Сильнее притяжение
+                        burger.y += dy * 0.08;
                     }
                 });
             }
@@ -1275,14 +1299,14 @@
                 
                 currentItemSpeed = Math.min(
                     gameSettings.maxItemSpeed, 
-                    gameSettings.initialItemSpeed + (level - 1) * 0.3
+                    gameSettings.initialItemSpeed + (level - 1) * 0.4 // Быстрее увеличивается сложность
                 );
                 
                 createParticles(
                     canvas.width / 2, 
                     canvas.height / 2, 
                     '#FFD700',
-                    30
+                    35
                 );
             }
         }
@@ -1549,20 +1573,25 @@
                 const screenHeight = window.innerHeight;
                 const containerHeight = container.scrollHeight;
                 
-                // Если контейнер не помещается по высоте, уменьшаем масштаб
-                if (containerHeight > screenHeight * 0.9) {
-                    const scale = (screenHeight * 0.9) / containerHeight;
-                    container.style.transform = `scale(${Math.min(scale, 1)})`;
+                // Автоматическая подстройка под высоту экрана
+                if (screenHeight < 700) {
+                    const scale = Math.min(0.9, (screenHeight * 0.85) / containerHeight);
+                    container.style.transform = `scale(${scale})`;
                 } else {
                     container.style.transform = 'scale(1)';
                 }
                 
-                // Для очень маленьких экранов
+                // Для очень маленьких экранов делаем еще меньше
                 if (screenHeight < 600) {
                     container.style.transform = 'scale(0.85)';
                 }
                 if (screenHeight < 500) {
                     container.style.transform = 'scale(0.75)';
+                }
+                
+                // Для высоких экранов увеличиваем
+                if (screenHeight > 1000) {
+                    container.style.transform = 'scale(1.1)';
                 }
             }
             
@@ -1571,6 +1600,7 @@
             
             // Вызываем сразу после загрузки
             setTimeout(adjustLayout, 100);
+            setTimeout(adjustLayout, 500); // Двойной вызов для надежности
         });
 
         // Оптимизация для мобильных устройств
